@@ -28,7 +28,7 @@ public class PersonGenerator {
         // (may need to adjust for other IDE)
         // Not sure if the toolkit is thread safe...
         File workingDirectory = new File(System.getProperty("user.dir"));
-        Path file = Paths.get(workingDirectory.getPath() + "\\src\\PersonData.txt");
+        Path file = Paths.get(workingDirectory.getPath() + "112233");
 
         do
         {
@@ -44,6 +44,9 @@ public class PersonGenerator {
             doneInput = SafeInput.getYNConfirm(in, "Are you done?");
 
         }while(!doneInput);
+
+        // File Path
+        String filePath = "PersonData.txt";
 
 
         try {
