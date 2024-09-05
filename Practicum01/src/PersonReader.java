@@ -1,49 +1,49 @@
-import java.io.File;
-import java.io.FileNotFoundException;
+import javax.swing.*;
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.Scanner;
 
 public class PersonReader {
     public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Please enter the path of the Person file:");
-
-        String filePath = scanner.nextLine();
-        File file = new File(filePath);
-
-        if (!file.exists() || !file.isFile()) {
-            System.out.println("The file does not exist or is not a valid file.");
-            return;
-        }
+        JFileChooser chooser = new JFileChooser();
+        File selectedFile;
+        String rec;
 
         try {
-            Scanner fileScanner = new Scanner(file);
+            File workingDirectory = new File(System.getProperty("user.dir"));
+            chooser.setCurrentDirectory(workingDirectory);
 
-            // Print the header
-            System.out.println(String.format("%-10s %-15s %-15s %-10s %-5s", "ID#", "Firstname", "Lastname", "Title", "YOB"));
-            System.out.println("==============================================================");
+            if (chooser.showOpenDialog(null) == JFileChooser.APPROVE_OPTION) {
+                selectedFile = chooser.getSelectedFile();
+                Path file = selectedFile.toPath();
+                InputStream in = new BufferedInputStream(Files.newInputStream(file));
+                BufferedReader reader = new BufferedReader(new InputStreamReader(in));
 
-            // Read the file and print the formatted data
-            while (fileScanner.hasNextLine()) {
-                String line = fileScanner.nextLine();
-                String[] parts = line.split("\\s+");
-                if (parts.length >= 5) {
-                    String id = parts[0];
-                    String firstName = parts[1];
-                    String lastName = parts[2];
-                    String title = parts[3];
-                    String yob = parts[4];
+                // Display header
+                System.out.println(String.format("%-8s %-15s %-15s %-8s %s", "ID#", "Firstname", "Lastname", "Title", "YOB"));
+                System.out.println("=================================================================");
 
-                    System.out.println(String.format("%-10s %-15s %-15s %-10s %-5s", id, firstName, lastName, title, yob));
-                } else {
-                    System.out.println("Invalid data format in the file.");
+                // Read and display each line
+                while (reader.ready()) {
+                    rec = reader.readLine();
+                    String[] fields = rec.split(", ");
+                    if (fields.length == 5) {
+                        System.out.println(String.format("%-8s %-15s %-15s %-8s %s",
+                                fields[0], fields[1], fields[2], fields[3], fields[4]));
+                    }
                 }
+                reader.close();
+                System.out.println("\nData file read!");
+            } else {
+                System.out.println("No file selected. Exiting program.");
+                System.exit(0);
             }
-
-            fileScanner.close();
         } catch (FileNotFoundException e) {
-            System.out.println("Error reading the file: " + e.getMessage());
+            System.out.println("File not found!!!");
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
-
-        scanner.close();
     }
 }
