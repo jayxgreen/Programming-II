@@ -1,0 +1,3 @@
+381676, Jay Green, Developer, 2005
+913647, Larry Thompson, Artist, 1961
+687165, Mark Parker, Writer, 1959
